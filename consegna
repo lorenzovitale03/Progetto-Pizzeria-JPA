@@ -1,0 +1,65 @@
+Realizzare una web application per la gestione di una pizzeria. L’applicazione dovrà permettere di gestire pizze, ingredienti, clienti e ordini utilizzando Spring Boot, Spring Data JPA, e un database relazionale (es. H2, MySQL, PostgreSQL).
+
+📦 Requisiti funzionali
+L’applicazione dovrà permettere:
+
+Gestione delle pizze
+
+Creazione, modifica, eliminazione e visualizzazione di pizze.
+
+Ogni pizza ha: id, nome, descrizione, prezzo, disponibile, e una lista di ingredienti.
+
+Gestione degli ingredienti
+
+Creazione, modifica, eliminazione e visualizzazione di ingredienti.
+
+Ogni ingrediente ha: id, nome, calorie.
+
+Gestione dei clienti
+
+Registrazione e visualizzazione dei clienti.
+
+Ogni cliente ha: id, nome, email, numero di telefono.
+
+Gestione degli ordini
+
+Un cliente può effettuare uno o più ordini.
+
+Un ordine ha: id, data, cliente, lista di pizze ordinate, stato (in preparazione, consegnato, annullato).
+
+🗂️ Requisiti tecnici
+Utilizzare Spring Boot con le seguenti dipendenze:
+
+Spring Web
+
+Spring Data JPA
+
+H2 o un database a scelta
+
+(Opzionale) Spring Security per autenticazione/registrazione clienti
+
+Definire correttamente le entità JPA e le relazioni (OneToMany, ManyToMany, ecc.)
+
+Creare i repository, i service e i controller secondo l’architettura a livelli
+
+(Bonus) Creare un’interfaccia utente con Thymeleaf o un client REST (Postman, frontend React/Angular)
+
+🎯 Obiettivi dell'esercizio
+Progettare un modello dati coerente con le esigenze del dominio
+
+Usare correttamente JPA per la persistenza
+
+Applicare il pattern MVC con Spring Boot
+
+(Facoltativo) Gestire validazioni, eccezioni, e test di base
+
+📅 Consegna
+Consegna il progetto su GitHub o come archivio ZIP.
+
+Includi un file README.md con:
+
+Descrizione del progetto
+
+Istruzioni per l’avvio
+
+Eventuali endpoint REST documentati
