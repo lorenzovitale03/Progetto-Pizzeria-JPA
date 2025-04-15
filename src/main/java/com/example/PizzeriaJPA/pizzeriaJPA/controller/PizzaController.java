@@ -47,8 +47,8 @@ public class PizzaController {
         return pizzaService.viewListPizza(pizza);
     }
 
-    //se la pizza non è presente nel db, di conseguenza l'id non è esistente
-    //quindi gestisci l'eccezione "Id non esistente"
+    /*se la pizza non è presente nel db, di conseguenza l'id non è esistente
+    quindi gestisci l'eccezione "Id non esistente"*/
     @GetMapping("{id}")
     public ResponseEntity<Pizza> viewPizzaId(@PathVariable Long id){
         Pizza pizza = pizzaService.getPizzaById(id);
@@ -59,8 +59,8 @@ public class PizzaController {
         }
     }
 
-    //se la pizza non è presente nel db, di conseguenza l'id non è esistente
-    //quindi gestisci l'eccezione "Pizza non trovata",non posso cancellarla
+    /*se la pizza non è presente nel db, di conseguenza l'id non è esistente
+    quindi gestisci l'eccezione "Pizza non trovata",non posso cancellarla*/
     @DeleteMapping("{id}/delete")
     public void deleteByIdPizza(@PathVariable Long id){
          //vado a recuperare la pizza tramite id
@@ -76,16 +76,18 @@ public class PizzaController {
 
     }
 
-    //se la pizza non è presente nel database non posso aggiungere nessun ingrediente
-    //quindi  gestisco  l'eccezione
-    //Anche se la pizza  è presente nel db ma l'ingrediente è null gestisco l'eccezione
+    /*se la pizza non è presente nel database non posso aggiungere nessun ingrediente
+    quindi  gestisco  l'eccezione
+    Anche se la pizza  è presente nel db ma l'ingrediente è null gestisco l'eccezione*/
     @PostMapping("{pizzaId}/ingredienti/{ingredienteId}")
     public ResponseEntity<Pizza> addIngredientPizza(@PathVariable Long pizzaId, @PathVariable Long ingredienteId){
         //mi vado a recuperare la pizza tramite il suo id
         Pizza pizzaTrova = pizzaService.getPizzaById(pizzaId);
         //mi vado a recuperare anche l'ingrediente tramite il suo id
         Ingredienti pizzaIngrediente = ingredientiService.getIngredientById(ingredienteId);
-        //se la pizza è presente nel database vado ad aggiungere l'ingrediente
+
+        /*se la pizza è presente nel database ma l'ingrediente non è presente oppure sia la pizza che l'ingrediente
+        non è presente nel db, gestisco l'eccezione. Altrimenti se presente nel db lo posso aggiungere alla pizza*/
 
         if(pizzaTrova != null && pizzaIngrediente == null || pizzaTrova == null && pizzaIngrediente == null){
             throw new EntityExistsException("Ingrediente e/o pizza inesistente");
