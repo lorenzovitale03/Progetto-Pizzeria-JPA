@@ -1,7 +1,9 @@
 package com.example.PizzeriaJPA.pizzeriaJPA.controller;
 
 import com.example.PizzeriaJPA.pizzeriaJPA.exception.MyExceptionHandler;
+import com.example.PizzeriaJPA.pizzeriaJPA.models.Ingredienti;
 import com.example.PizzeriaJPA.pizzeriaJPA.models.Pizza;
+import com.example.PizzeriaJPA.pizzeriaJPA.services.IngredientiService;
 import com.example.PizzeriaJPA.pizzeriaJPA.services.PizzaService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,6 +20,7 @@ import java.util.List;
 public class PizzaController {
 
     @Autowired PizzaService pizzaService;
+    @Autowired IngredientiService ingredientiService;
 
     @PostMapping
     public Pizza getPizza(@RequestBody Pizza pizza){
@@ -73,8 +76,23 @@ public class PizzaController {
 
     }
 
+    //se la pizza non è presente nel database non posso aggiungere nessun ingrediente
+    //quindi  gestisco  l'eccezione
+    //Anche se la pizza  è presente nel db ma l'ingrediente è null gestisco l'eccezione
     @PostMapping("{pizzaId}/ingredienti/{ingredienteId}")
-    public Pizza addIngredientPizza(@PathVariable Long pizzaId, @PathVariable Long ingredienteId){
-        return pizzaService.addIngredientsToPizza(pizzaId,ingredienteId);
+    public ResponseEntity<Pizza> addIngredientPizza(@PathVariable Long pizzaId, @PathVariable Long ingredienteId){
+        //mi vado a recuperare la pizza tramite il suo id
+        Pizza pizzaTrova = pizzaService.getPizzaById(pizzaId);
+        //mi vado a recuperare anche l'ingrediente tramite il suo id
+        Ingredienti pizzaIngrediente = ingredientiService.getIngredientById(ingredienteId);
+        //se la pizza è presente nel database vado ad aggiungere l'ingrediente
+
+        if(pizzaTrova != null && pizzaIngrediente == null || pizzaTrova == null && pizzaIngrediente == null){
+            throw new EntityExistsException("Ingrediente e/o pizza inesistente");
+        }else{
+            pizzaService.addIngredientsToPizza(pizzaId,ingredienteId);
+            return ResponseEntity.ok(pizzaTrova);
+        }
+
     }
 }
