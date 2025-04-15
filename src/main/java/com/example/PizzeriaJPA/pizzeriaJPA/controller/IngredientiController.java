@@ -58,8 +58,16 @@ public class IngredientiController {
         }
     }
 
+
     @GetMapping("{id}")
-    public Ingredienti viewIngredientById(@PathVariable Long id){
-        return ingredientiService.getIngredientById(id);
+    public ResponseEntity<Ingredienti> viewIngredientById(@PathVariable Long id){
+        Ingredienti recupero = ingredientiService.getIngredientById(id);
+
+        if(recupero != null){
+             return ResponseEntity.ok(recupero);
+        }else{
+            throw new EntityExistsException("ingrediente inesistente quindi non visualizzabile");
+        }
+
     }
 }
