@@ -4,7 +4,10 @@ import com.example.PizzeriaJPA.pizzeriaJPA.models.Ingredienti;
 import com.example.PizzeriaJPA.pizzeriaJPA.models.Pizza;
 import com.example.PizzeriaJPA.pizzeriaJPA.services.IngredientiService;
 import com.example.PizzeriaJPA.pizzeriaJPA.services.PizzaService;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,14 +29,33 @@ public class IngredientiController {
         return ingredientiService.createIngredients(ingredienti);
     }
 
+    //se l'ingrediente non è presente nel db non posso non posso aggiornarlo
     @PutMapping("{id}")
-    public Ingredienti updateIngredientById(@PathVariable Long id,@RequestBody Ingredienti ingredienti){
-        return ingredientiService.updateIngredientsById(id,ingredienti);
+    public ResponseEntity<Ingredienti> updateIngredientById(@PathVariable Long id, @RequestBody Ingredienti ingredienti){
+        //mi vado a recuperare l'id dell'ingrediente
+        Ingredienti verificaIngrediente = ingredientiService.getIngredientById(id);
+
+        //se è presente nel db lo vado ad aggiornare
+        if(verificaIngrediente != null){
+             ingredientiService.updateIngredientsById(id,ingredienti);
+             return ResponseEntity.ok(verificaIngrediente);
+        }else{
+            throw new EntityNotFoundException("Ingrediente non trovato");
+        }
     }
 
+    //Se l'ingrediente non esiste nel database,di conseguenza non è eliminabile quindi gestisco l'eccezione
     @DeleteMapping("{id}/delete")
     public void deleteIngredientsById(@PathVariable Long id){
-        ingredientiService.deleteIngredientsById(id);
+        //mi vado a recuperare l'id dell'ingrediente
+        Ingredienti verifica = ingredientiService.getIngredientById(id);
+
+        //se esiste lo elimino
+        if(verifica != null){
+            ingredientiService.deleteIngredientsById(id);
+        }else{
+            throw new EntityExistsException("Ingrediente inesistente quindi non eliminabile");
+        }
     }
 
     @GetMapping("{id}")
