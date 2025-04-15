@@ -25,4 +25,19 @@ public class IngredientiController {
     public Ingredienti saveIngredient(@RequestBody Ingredienti ingredienti){
         return ingredientiService.createIngredients(ingredienti);
     }
+
+    @PutMapping("{id}")
+    public Ingredienti updateIngredientById(@PathVariable Long id,@RequestBody Ingredienti ingredienti){
+        return ingredientiService.updateIngredientsById(id,ingredienti);
+    }
+
+    @DeleteMapping("{id}/delete")
+    public void deleteIngredientsById(@PathVariable Long id){
+        ingredientiService.deleteIngredientsById(id);
+    }
+
+    @GetMapping("{id}")
+    public Ingredienti viewIngredientById(@PathVariable Long id){
+        return ingredientiService.getIngredientById(id);
+    }
 }
