@@ -72,4 +72,9 @@ public class PizzaController {
         }
 
     }
+
+    @PostMapping("{pizzaId}/ingredienti/{ingredienteId}")
+    public Pizza addIngredientPizza(@PathVariable Long pizzaId, @PathVariable Long ingredienteId){
+        return pizzaService.addIngredientsToPizza(pizzaId,ingredienteId);
+    }
 }

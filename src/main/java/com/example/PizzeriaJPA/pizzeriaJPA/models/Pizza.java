@@ -21,9 +21,14 @@ public class Pizza {
     private Long id;
     @Column(nullable = false)
     private String nome;
-    private String descrizione;
     @Column (nullable = false)
     private Double prezzo;
     @Column(nullable = false)
     private Boolean disponibile;
+
+    @ManyToMany
+    @JoinTable(name = "pizza_ingredienti",
+    joinColumns = @JoinColumn(name = "pizza_id"),
+    inverseJoinColumns = @JoinColumn(name = "ingrediente_id"))
+    private List<Ingredienti> ingredienti;
 }
