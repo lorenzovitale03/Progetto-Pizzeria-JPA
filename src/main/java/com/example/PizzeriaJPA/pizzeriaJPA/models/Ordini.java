@@ -28,7 +28,7 @@ public class Ordini {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Clienti cliente;
 
-    @ManyToOne//poichè piu' ordini possono appartenere a un cliente
+    @ManyToMany//poichè piu' ordini possono appartenere a piu' clienti.
     @JoinTable(name = "ordine_pizza",
             joinColumns = @JoinColumn(name = "ordine_id"),
             inverseJoinColumns = @JoinColumn(name = "pizza_id"))
