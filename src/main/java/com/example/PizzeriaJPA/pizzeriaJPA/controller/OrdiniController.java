@@ -25,7 +25,7 @@ public class OrdiniController {
     //in ogni caso devo gestire l'eccezione: Se non esiste l'id dell'utente
     //o l'id della pizza o entrambi, non posso creare l'ordine
     @PostMapping("{clientId}/ordina/{pizzaId}")
-    public ResponseEntity<Ordini> creaOrdine(@RequestBody OrderDTO OrderDTO, @PathVariable Long clientId, @PathVariable Long pizzaId){
+    public ResponseEntity<Ordini> creaOrdine(@RequestBody OrderDTO OrderDTO,@PathVariable Long clientId,@PathVariable Long pizzaId){
         //mi recupero l'id  del cliente
         Clienti cliente = clientiService.visualizzaIdUtente(clientId);
         //mi recupero l'id della pizza
@@ -38,4 +38,23 @@ public class OrdiniController {
              return ResponseEntity.status(HttpStatus.CREATED).body(ordine);
         }
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Ordini> visualizzaOrdineDaId(@PathVariable Long id){
+         Ordini ordineVisualizza = ordiniService.visualizzaIdOrdine(id);
+
+         if(ordineVisualizza != null){
+             return ResponseEntity.ok(ordineVisualizza);
+         }else {
+             throw new EntityNotFoundException("Ordine non trovato");
+         }
+
+    }
+
+    /*public ResponseEntity<Ordini> annullaOrdineCliente(@RequestBody OrderDTO orderDTO, @PathVariable Long clientId, @PathVariable Long orderId){
+        //recupero l'id del cliente
+        Clienti clienti = clientiService.visualizzaIdUtente(clientId);
+        //recupero gli ordini eseguiti dal cliente tramite id
+        Ordini ordini = ordiniService.visualizzaIdOrdine(orderId);
+    }*/
 }

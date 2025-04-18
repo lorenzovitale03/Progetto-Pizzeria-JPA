@@ -8,7 +8,9 @@ import com.example.PizzeriaJPA.pizzeriaJPA.models.StatoOrdine;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.ClientiRepository;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.OrdiniRepository;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.PizzaRepository;
+import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -36,5 +38,24 @@ public class OrdiniService {
 
         //salvo l'ordine nel db
         return ordiniRepository.save(ordineCrea);
+    }
+
+    public Ordini visualizzaIdOrdine(Long id){
+        return ordiniRepository.findById(id).orElse(null);
+    }
+
+    public Ordini annullaOrdineDaId(OrderDTO orderDTO, Long id){
+        //recupero l'id del cliente che vuole eliminare l'ordine
+        Clienti clienti = clientiRepository.findById(orderDTO.getClienteId()).orElse(null);
+        //recupero l'ordine da annullare
+        Ordini ordineAnnulla = ordiniRepository.findById(id).orElse(null);
+
+        //annullo l'ordine
+        ordineAnnulla.setData(LocalDate.now());
+        ordineAnnulla.setStato(StatoOrdine.ANNULLATO);
+        ordineAnnulla.setCliente(clienti);
+
+        //salvo nel db l'ordine
+        return ordiniRepository.save(ordineAnnulla);
     }
 }
