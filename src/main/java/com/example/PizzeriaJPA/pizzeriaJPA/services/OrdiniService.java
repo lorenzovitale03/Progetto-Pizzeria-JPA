@@ -44,16 +44,13 @@ public class OrdiniService {
         return ordiniRepository.findById(id).orElse(null);
     }
 
-    public Ordini annullaOrdineDaId(OrderDTO orderDTO, Long id){
-        //recupero l'id del cliente che vuole eliminare l'ordine
-        Clienti clienti = clientiRepository.findById(orderDTO.getClienteId()).orElse(null);
+    public Ordini annullaOrdineDaId(Long id){
         //recupero l'ordine da annullare
         Ordini ordineAnnulla = ordiniRepository.findById(id).orElse(null);
 
         //annullo l'ordine
         ordineAnnulla.setData(LocalDate.now());
         ordineAnnulla.setStato(StatoOrdine.ANNULLATO);
-        ordineAnnulla.setCliente(clienti);
 
         //salvo nel db l'ordine
         return ordiniRepository.save(ordineAnnulla);

@@ -51,10 +51,19 @@ public class OrdiniController {
 
     }
 
-    /*public ResponseEntity<Ordini> annullaOrdineCliente(@RequestBody OrderDTO orderDTO, @PathVariable Long clientId, @PathVariable Long orderId){
+    @PostMapping("{clientId}/annulla/{orderId}")
+    public ResponseEntity<Ordini> annullaOrdineCliente(@PathVariable Long clientId, @PathVariable Long orderId){
         //recupero l'id del cliente
         Clienti clienti = clientiService.visualizzaIdUtente(clientId);
         //recupero gli ordini eseguiti dal cliente tramite id
         Ordini ordini = ordiniService.visualizzaIdOrdine(orderId);
-    }*/
+
+        //Se il cliente è presente nel database e anche l'ordine è presente, lo annullo
+        if(clienti != null && ordini != null){
+            Ordini ordineAnnullato = ordiniService.annullaOrdineDaId(orderId);
+            return ResponseEntity.ok(ordineAnnullato);
+        }else {
+            throw new EntityNotFoundException("Ordine e/o utente non presente nel sistema");
+        }
+    }
 }
