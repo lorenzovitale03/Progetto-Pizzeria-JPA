@@ -8,9 +8,11 @@ import com.example.PizzeriaJPA.pizzeriaJPA.models.StatoOrdine;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.ClientiRepository;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.OrdiniRepository;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.PizzaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -54,5 +56,21 @@ public class OrdiniService {
 
         //salvo nel db l'ordine
         return ordiniRepository.save(ordineAnnulla);
+    }
+
+    public Ordini ordineConsegnatoDaId(Long idOrder, Long idClient){
+        //recupero l'ordine da id
+        Ordini consegna = ordiniRepository.findById(idOrder).orElse(null);
+        //recupero il cliente da id
+        Clienti cliente = clientiRepository.findById(idClient).orElse(null);
+
+        if(consegna != null && cliente != null){
+            consegna.setData(LocalDate.now());
+            consegna.setStato(StatoOrdine.CONSEGNATO);
+            consegna.setCliente(cliente);
+            return ordiniRepository.save(consegna);
+        }else{
+            throw new EntityNotFoundException("Ordine non trovato");
+        }
     }
 }

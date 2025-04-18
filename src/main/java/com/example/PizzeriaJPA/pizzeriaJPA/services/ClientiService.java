@@ -2,6 +2,8 @@ package com.example.PizzeriaJPA.pizzeriaJPA.services;
 
 import com.example.PizzeriaJPA.pizzeriaJPA.models.Clienti;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.ClientiRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +23,27 @@ public class ClientiService {
         return clientiRepository.findAll();
     }
 
-    public void eliminaUtenteById(Long id){
-        clientiRepository.deleteById(id);
+    public Clienti eliminaUtenteById(Long id){
+        //recupero l'id del cliente
+        Clienti clienteTrova = clientiRepository.findById(id).orElse(null);
+
+        if(clienteTrova != null){
+            clientiRepository.deleteById(id);
+        }else {
+            throw new EntityNotFoundException("Id non trovato nel db");
+        }
+        return clienteTrova;
+
     }
 
     public Clienti visualizzaIdUtente(Long id){
-        return clientiRepository.findById(id).orElse(null);
+        //recupero l'id  del cliente
+        Clienti cliente =  clientiRepository.findById(id).orElse(null);
+
+        if(cliente != null){
+            return cliente;
+        }else{
+            throw new EntityNotFoundException("Cliente inesistente quindi non visualizzabile");
+        }
     }
 }

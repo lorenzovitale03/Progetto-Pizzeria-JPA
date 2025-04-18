@@ -4,6 +4,7 @@ import com.example.PizzeriaJPA.pizzeriaJPA.models.Ingredienti;
 import com.example.PizzeriaJPA.pizzeriaJPA.models.Pizza;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.IngredientiRepository;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.PizzaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,27 +25,31 @@ public class IngredientiService {
     public Ingredienti updateIngredientsById(Long id, Ingredienti ingredienti){
         //recupero l'ingrediente  tramite id
         return ingredientiRepository.findById(id).map(modificaIngredienti ->{
-            if(ingredienti.getNome() != null) modificaIngredienti.setNome(ingredienti.getNome());
-            if(ingredienti.getCalorie() != null) modificaIngredienti.setCalorie(ingredienti.getCalorie());
+            if(ingredienti.getNome() != null && ingredienti.getCalorie() != null){
+                modificaIngredienti.setNome(ingredienti.getNome());
+                modificaIngredienti.setCalorie(ingredienti.getCalorie());
+            }
             //salvo  l'ingrediente modificato nel db
             return ingredientiRepository.save(modificaIngredienti);
-        }).orElse(null);
+        }).orElseThrow(() -> new EntityNotFoundException("Ingrediente numero: " + id + " non trovato"));
     }
 
     public void deleteIngredientsById(Long id){
-        Ingredienti ingredienti = ingredientiRepository.findById(id).orElse(null);
-
+        Ingredienti ingredienti = ingredientiRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Ingrediente non trovato"));
         List<Pizza> pizzeConIngrediente = pizzaRepository.findAllByIngredienti_Id(id);
-        for(Pizza pizza : pizzeConIngrediente){
-            pizza.getIngredienti().remove(ingredienti);
-            pizzaRepository.save(pizza);
-        }
 
-        ingredientiRepository.deleteById(id);
+        for(Pizza pizza : pizzeConIngrediente){
+                pizza.getIngredienti().remove(ingredienti);
+                pizzaRepository.save(pizza);
+            }
+
+        ingredientiRepository.delete(ingredienti);
     }
 
     public Ingredienti getIngredientById(Long id){
-        return ingredientiRepository.findById(id).orElse(null);
+        return ingredientiRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Ingrediente non trovato"));
     }
 
     public List<Ingredienti> viewIngredientsList(){

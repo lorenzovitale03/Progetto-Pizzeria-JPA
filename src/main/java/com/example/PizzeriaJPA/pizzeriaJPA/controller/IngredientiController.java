@@ -29,45 +29,24 @@ public class IngredientiController {
         return ingredientiService.createIngredients(ingredienti);
     }
 
-    //se l'ingrediente non è presente nel db non posso non posso aggiornarlo
     @PutMapping("{id}")
-    public ResponseEntity<Ingredienti> updateIngredientById(@PathVariable Long id, @RequestBody Ingredienti ingredienti){
-        //mi vado a recuperare l'id dell'ingrediente
-        Ingredienti verificaIngrediente = ingredientiService.getIngredientById(id);
-
-        //se è presente nel db lo vado ad aggiornare
-        if(verificaIngrediente != null){
-             ingredientiService.updateIngredientsById(id,ingredienti);
-             return ResponseEntity.ok(verificaIngrediente);
-        }else{
-            throw new EntityNotFoundException("Ingrediente non trovato");
-        }
+    public ResponseEntity<String> updateIngredientById(@PathVariable Long id, @RequestBody Ingredienti ingredienti){
+        ingredientiService.updateIngredientsById(id,ingredienti);
+        return ResponseEntity.ok("Ingrediente aggiornato con successo");
     }
 
     //Se l'ingrediente non esiste nel database,di conseguenza non è eliminabile quindi gestisco l'eccezione
     @DeleteMapping("{id}/delete")
-    public void deleteIngredientsById(@PathVariable Long id){
-        //mi vado a recuperare l'id dell'ingrediente
-        Ingredienti verifica = ingredientiService.getIngredientById(id);
-
-        //se esiste lo elimino
-        if(verifica != null){
-            ingredientiService.deleteIngredientsById(id);
-        }else{
-            throw new EntityExistsException("Ingrediente inesistente quindi non eliminabile");
-        }
+    public ResponseEntity<String> deleteIngredientsById(@PathVariable Long id){
+        ingredientiService.deleteIngredientsById(id);
+        return ResponseEntity.ok("Ingrediente numero: " + id + " eliminato con successo");
     }
 
 
     @GetMapping("{id}")
     public ResponseEntity<Ingredienti> viewIngredientById(@PathVariable Long id){
-        Ingredienti recupero = ingredientiService.getIngredientById(id);
-
-        if(recupero != null){
-             return ResponseEntity.ok(recupero);
-        }else{
-            throw new EntityExistsException("ingrediente inesistente quindi non visualizzabile");
-        }
+       Ingredienti visualizzaIngrediente = ingredientiService.getIngredientById(id);
+       return ResponseEntity.ok(visualizzaIngrediente);
 
     }
 }

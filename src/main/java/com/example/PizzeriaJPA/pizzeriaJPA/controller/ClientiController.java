@@ -28,23 +28,12 @@ public class ClientiController {
     @GetMapping("{id}")
     private ResponseEntity<Clienti> visualizzaUtenteById(@PathVariable Long id){
         Clienti cliente = clientiService.visualizzaIdUtente(id);
-
-        if(cliente != null){
-            return ResponseEntity.ok(cliente);
-        }else{
-            throw new EntityExistsException("Cliente inesistente quindi non visualizzabile");
-        }
+        return ResponseEntity.ok(cliente);
     }
 
     @DeleteMapping("{id}/delete")
-    public void eliminaUtente(@PathVariable Long id){
-        Clienti clienteId = clientiService.visualizzaIdUtente(id);
-
-        if(clienteId != null){
-            clientiService.eliminaUtenteById(id);
-        }else{
-            throw new EntityExistsException("Cliente inesistente quindi non eliminabile");
-        }
-
+    public ResponseEntity<String> eliminaUtente(@PathVariable Long id){
+        clientiService.eliminaUtenteById(id);
+        return ResponseEntity.ok("Utente rimosso con successo");
     }
 }

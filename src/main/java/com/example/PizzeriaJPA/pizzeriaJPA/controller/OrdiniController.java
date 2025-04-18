@@ -66,4 +66,10 @@ public class OrdiniController {
             throw new EntityNotFoundException("Ordine e/o utente non presente nel sistema");
         }
     }
+
+    @PostMapping("{orderId}/consegna/{clientId}")
+    public ResponseEntity<Ordini> consegnaOrdineCliente(@PathVariable Long orderId, @PathVariable Long clientId){
+        Ordini ordineConsegnato = ordiniService.ordineConsegnatoDaId(orderId,clientId);
+        return ResponseEntity.ok(ordineConsegnato);
+    }
 }
