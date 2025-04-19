@@ -4,6 +4,7 @@ import com.example.PizzeriaJPA.pizzeriaJPA.models.Ingredienti;
 import com.example.PizzeriaJPA.pizzeriaJPA.models.Pizza;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.IngredientiRepository;
 import com.example.PizzeriaJPA.pizzeriaJPA.repositories.PizzaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +26,27 @@ public class PizzaService {
     public Pizza updatePizza(Long id, Pizza pizza) {
         //recupero la pizza tramite id
         return pizzaRepository.findById(id).map(modificaPizza -> {
-            if (pizza.getPrezzo() != null) modificaPizza.setPrezzo(pizza.getPrezzo());
-            if (pizza.getDisponibile() != null) modificaPizza.setDisponibile(pizza.getDisponibile());
-            if(pizza.getNome() !=  null) modificaPizza.setNome(pizza.getNome());
+            if (pizza.getPrezzo() != null && pizza.getDisponibile() != null && pizza.getNome() != null){
+                modificaPizza.setPrezzo(pizza.getPrezzo());
+                modificaPizza.setDisponibile(pizza.getDisponibile());
+                modificaPizza.setNome(pizza.getNome());
+            }
             //salvo la pizza modificata nel db
             return pizzaRepository.save(modificaPizza);
-        }).orElse(null);
+        }).orElseThrow(()-> new EntityNotFoundException("Pizza non trovata"));
     }
 
     public void deletePizza(Long id){
-         pizzaRepository.deleteById(id);
+        //vado a recuperare la pizza tramite id
+        Pizza pizzaDelete = pizzaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pizza non trovata"));
+
+        if(pizzaDelete != null){
+            pizzaDelete.setDisponibile(false);
+            pizzaRepository.save(pizzaDelete);
+            pizzaRepository.deleteById(id);
+        }
+
     }
 
     public List<Pizza> viewListPizza(Pizza pizza){
@@ -42,7 +54,8 @@ public class PizzaService {
     }
 
     public Pizza getPizzaById(Long id){
-        return pizzaRepository.findById(id).orElse(null);
+        return pizzaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pizza non trovata"));
     }
 
     public Pizza addIngredientsToPizza(Long pizzaId, Long ingredienteId){

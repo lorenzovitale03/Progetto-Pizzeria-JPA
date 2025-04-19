@@ -27,19 +27,10 @@ public class PizzaController {
         return pizzaService.savePizza(pizza);
     }
 
-    //se la pizza non è presente nel db, gestisci l'eccezione "Pizza non trovata",
-    //non posso in quel caso aggiornare la pizza
     @PutMapping("{id}")
     public ResponseEntity<Pizza> aggiornoPizza(@PathVariable Long id, @RequestBody Pizza pizza){
-        //prima recupero la pizza dal suo id
-        Pizza pizzaRecupera = pizzaService.getPizzaById(id);
-        //verifico se è presente o no nel db
-        if(pizzaRecupera != null){
-            Pizza recuperato = pizzaService.updatePizza(id,pizza);
-            return ResponseEntity.ok(recuperato);
-        }else {
-            throw new EntityNotFoundException("Pizza non trovata");
-        }
+        Pizza pizzAggiorna = pizzaService.updatePizza(id, pizza);
+        return ResponseEntity.ok(pizzAggiorna);
     }
 
     @GetMapping
@@ -51,12 +42,8 @@ public class PizzaController {
     quindi gestisci l'eccezione "Id non esistente"*/
     @GetMapping("{id}")
     public ResponseEntity<Pizza> viewPizzaId(@PathVariable Long id){
-        Pizza pizza = pizzaService.getPizzaById(id);
-        if(pizza != null){
-            return ResponseEntity.ok(pizza);
-        }else {
-            throw new EntityExistsException("Pizza non esistente");
-        }
+        Pizza pizzaId = pizzaService.getPizzaById(id);
+        return ResponseEntity.ok(pizzaId);
     }
 
     /*se la pizza non è presente nel db, di conseguenza l'id non è esistente

@@ -27,11 +27,13 @@ public class OrdiniService {
 
     public Ordini ordinaPizza(OrderDTO OrderDTO){
         //recupero l'id del cliente
-        Clienti clienti = clientiRepository.findById(OrderDTO.getClienteId()).orElse(null);
+        Clienti clienti = clientiRepository.findById(OrderDTO.getClienteId())
+                .orElseThrow(() -> new EntityNotFoundException("Pizza e/o ordine non trovato"));
         //recupero la lista di pizze dal loro id
         List<Pizza> pizzaList = pizzaRepository.findAllById(OrderDTO.getPizzaIdList());
 
         //vado a crearmi l'ordine
+
         Ordini ordineCrea = new Ordini();
         ordineCrea.setData(LocalDate.now());
         ordineCrea.setCliente(clienti);
@@ -43,12 +45,14 @@ public class OrdiniService {
     }
 
     public Ordini visualizzaIdOrdine(Long id){
-        return ordiniRepository.findById(id).orElse(null);
+        return ordiniRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("Ordine non trovato"));
     }
 
     public Ordini annullaOrdineDaId(Long id){
         //recupero l'ordine da annullare
-        Ordini ordineAnnulla = ordiniRepository.findById(id).orElse(null);
+        Ordini ordineAnnulla = ordiniRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Ordine non trovato, impossibile annullare"));
 
         //annullo l'ordine
         ordineAnnulla.setData(LocalDate.now());
@@ -72,5 +76,9 @@ public class OrdiniService {
         }else{
             throw new EntityNotFoundException("Ordine non trovato");
         }
+    }
+
+    public List<Ordini> visualizzaTuttiOrdini(){
+        return ordiniRepository.findAll();
     }
 }
