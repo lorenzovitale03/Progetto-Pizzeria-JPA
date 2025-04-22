@@ -36,7 +36,7 @@ public class PizzaService {
         }).orElseThrow(()-> new EntityNotFoundException("Pizza non trovata"));
     }
 
-    public void deletePizza(Long id){
+    public Pizza deletePizza(Long id){
         //vado a recuperare la pizza tramite id
         Pizza pizzaDelete = pizzaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pizza non trovata"));
@@ -46,7 +46,7 @@ public class PizzaService {
             pizzaRepository.save(pizzaDelete);
             pizzaRepository.deleteById(id);
         }
-
+        return pizzaDelete;
     }
 
     public List<Pizza> viewListPizza(Pizza pizza){
@@ -60,9 +60,11 @@ public class PizzaService {
 
     public Pizza addIngredientsToPizza(Long pizzaId, Long ingredienteId){
         //recupero l'id della pizza
-        Pizza pizza = pizzaRepository.findById(pizzaId).orElse(null);
+        Pizza pizza = pizzaRepository.findById(pizzaId)
+                .orElseThrow(() -> new EntityNotFoundException("Pizza e/o ingrediente non trovato"));
         //recupero gli ingredienti della pizza
-        Ingredienti ingredienti = ingredientiRepository.findById(ingredienteId).orElse(null);
+        Ingredienti ingredienti = ingredientiRepository.findById(ingredienteId)
+                .orElseThrow(() -> new EntityNotFoundException("Pizza e/o ingrediente non trovato"));
 
         if(pizza != null && ingredienti != null ){
             //se entrambi sono presenti nel db, verifica se l'ingrediente è gia' stato assegnato alla pizza
